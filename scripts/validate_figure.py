@@ -122,6 +122,17 @@ def check_spec(spec, errors, warnings, checks):
                     warnings.append(f"chart {c['id']} series {s['id']}: value+error exceeds scale max (whisker clipped)")
         need_src(c, "chart")
     need_src(dict(spec["conclusion"], id="conclusion"), "conclusion")
+    # --- length limits (the renderer auto-fits, but these flag quality issues) ---
+    if len(spec["title"]) > 60:
+        warnings.append(f"title {len(spec['title'])} chars > recommended 60; renderer shrinks/wraps it, prefer a shorter title")
+    if len(spec["conclusion"]["text"]) > 120:
+        warnings.append(f"conclusion {len(spec['conclusion']['text'])} chars > recommended 120")
+    for e in spec["entities"]:
+        if len(e["label"]) > 40:
+            warnings.append(f"entity {e['id']}: label {len(e['label'])} chars > recommended 40")
+    for r in spec["relations"]:
+        if r.get("label") and len(r["label"]) > 24:
+            warnings.append(f"relation {r['id']}: label {len(r['label'])} chars > recommended 24")
     checks["elements_with_full_source"] = n_src
     checks["cjk_in_figure_text"] = any(
         ord(ch) > 0x2E80 for ch in spec["title"] + spec["conclusion"]["text"]

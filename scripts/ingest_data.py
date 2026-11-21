@@ -90,8 +90,19 @@ def main():
     ap.add_argument("--scale-max", type=float)
     ap.add_argument("--kind", choices=("bar", "line"), default="bar",
                     help="chart encoding emitted in the fragment")
+    ap.add_argument("--input-root",
+                    help="base input dir; when given, source.file is stored relative to it (e.g. /input)")
     ap.add_argument("--out", required=True)
     a = ap.parse_args()
+    import os
+    file_ref = a.file
+    if a.input_root:
+        try:
+            rel = os.path.relpath(a.file, a.input_root)
+            if not rel.startswith(".."):
+                file_ref = rel.replace(os.sep, "/")
+        except ValueError:
+            pass
     warnings = []
     if a.file.lower().endswith(".csv"):
         sheet, rows, _ = read_csv(a.file)
@@ -137,7 +148,7 @@ def main():
     chart = {"id": a.id, "panel": a.panel, "kind": a.kind, "title": a.title,
              "unit": a.unit, "scale": {"min": 0, "max": smax},
              "series": [{k: v for k, v in s.items() if k not in ("source_cell", "raw_quote")} for s in series],
-             "source": {"file": a.file, "locator": cells, "quote": cells}}
+             "source": {"file": file_ref, "locator": cells, "quote": cells}}
     out = {"chart": chart, "ingest_warnings": warnings,
            "cell_provenance": [{"series_id": s["id"], "cell": s["source_cell"], "raw": s["raw_quote"]} for s in series]}
     with open(a.out, "w", encoding="utf-8") as f:

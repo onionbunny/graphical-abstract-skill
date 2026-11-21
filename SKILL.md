@@ -36,7 +36,10 @@ draw scientific text/data, never bypass the validator.
    numbers by hand. Run:
    `python3 {skill_dir}/scripts/ingest_data.py --file <data> --id c1 --panel p3 --title "..." --unit "..." --out /app/work/chart_frag.json`
    (long layout: label,value,group[,error][,category]; xlsx needs no extra deps). Add
-   `--kind line` for dose-response/time-series curves; default is bar.
+   `--kind line` for dose-response/time-series curves; default is bar. Add
+   `--input-root <dir>` to store each cell's `source.file` as a path relative to that
+   root (portable across machines; separators normalized to `/`); without it the
+   absolute path is kept. `--scale-max` overrides the auto-computed axis maximum.
    Merge the returned `chart` into the spec; keep `cell_provenance` for result.json.
 3. **Extract.** Read `references/drawing_rules.md` fully. Build the panel–point mapping
    (question / methods / results / conclusion), then write `/app/work/figure_spec.json`

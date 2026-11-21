@@ -1,0 +1,55 @@
+{
+  "spec_version": "1.0",
+  "case_id": "selftest-mixed",
+  "title": "Catalyst A surface oxidation lowers product yield",
+  "canvas": {"width_mm": 180, "height_mm": 120, "dpi": 300},
+  "panels": [
+    {"id": "p1", "role": "question", "title": "Does the surface oxidize?", "grid": [0, 0]},
+    {"id": "p2", "role": "methods", "title": "Deposit Catalyst A", "grid": [0, 1]},
+    {"id": "p3", "role": "results", "title": "Oxidation and yield", "grid": [1, 0]},
+    {"id": "p4", "role": "conclusion", "title": "Mechanistic summary", "grid": [1, 1]}
+  ],
+  "entities": [
+    {"id": "e1", "panel": "p1", "label": "Metal substrate", "kind": "material", "slot": [0, 0],
+     "source": {"file": "materials.md", "locator": "sec.1", "quote": "A polished metal substrate was used as the reaction surface."}},
+    {"id": "e2", "panel": "p1", "label": "Oxygen radical", "kind": "molecule", "slot": [0, 1],
+     "source": {"file": "materials.md", "locator": "sec.1", "quote": "Oxygen radicals are generated at the surface under ambient conditions."}},
+    {"id": "e3", "panel": "p2", "label": "Catalyst A coating", "kind": "sample", "slot": [0, 0], "group": "treated",
+     "source": {"file": "materials.md", "locator": "sec.2", "quote": "Catalyst A was deposited as a thin coating on the substrate before each run."}},
+    {"id": "e4", "panel": "p3", "label": "Oxidized layer", "kind": "material", "slot": [0, 0],
+     "source": {"file": "materials.md", "locator": "sec.3", "quote": "The coating oxidizes the surface into an oxidized layer."}},
+    {"id": "e5", "panel": "p3", "label": "Leached metal ion", "kind": "molecule", "slot": [0, 1],
+     "source": {"file": "materials.md", "locator": "sec.3", "quote": "The oxidized layer then leaches a metal ion byproduct."}},
+    {"id": "e6", "panel": "p4", "label": "Stable product", "kind": "material", "slot": [0, 0],
+     "source": {"file": "materials.md", "locator": "sec.4", "quote": "The leached ion degrades the final product, so Catalyst A lowers stable output."}}
+  ],
+  "relations": [
+    {"id": "r1", "from": "e3", "to": "e4", "type": "activates", "label": "coating oxidizes",
+     "source": {"file": "materials.md", "locator": "sec.3", "quote": "The coating oxidizes the surface into an oxidized layer."}},
+    {"id": "r2", "from": "e4", "to": "e5", "type": "converts", "label": "leaches",
+     "source": {"file": "materials.md", "locator": "sec.3", "quote": "The oxidized layer then leaches a metal ion byproduct."}},
+    {"id": "r3", "from": "e5", "to": "e6", "type": "inhibits", "label": "degrades",
+     "source": {"file": "materials.md", "locator": "sec.4", "quote": "The leached ion degrades the final product."}}
+  ],
+  "charts": [
+    {"id": "c1", "panel": "p3", "kind": "bar", "title": "Product yield", "unit": "%",
+     "scale": {"min": 0, "max": 100},
+     "series": [
+       {"id": "s1", "label": "Control", "value": 88.2, "group": "control", "error": 2.7},
+       {"id": "s2", "label": "Catalyst A", "value": 37.6, "group": "treated", "error": 5.1}
+     ],
+     "source": {"file": "data.csv", "locator": "rows 2-3, col value/error",
+                "quote": "Control,88.2,control,2.7; Catalyst A,37.6,treated,5.1"}}
+  ],
+  "groups": {
+    "control": {"label": "Control", "color": "#0072B2"},
+    "treated": {"label": "Catalyst A", "color": "#E69F00"}
+  },
+  "conclusion": {
+    "text": "Catalyst A oxidizes the surface; leached ions degrade the product and reduce stable yield.",
+    "source": {"file": "materials.md", "locator": "sec.4",
+               "quote": "The leached ion degrades the final product, so Catalyst A lowers stable output."}
+  },
+  "uncertainties": [],
+  "off_figure_notes": ["n=3 replicates, mean +/- SD (synthetic self-test)"]
+}
